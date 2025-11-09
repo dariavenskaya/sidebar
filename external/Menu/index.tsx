@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 export type MenuItem = {
   label: string;
@@ -12,7 +12,7 @@ interface MenuProps {
   expandElement?: React.ReactNode | string;
   shrinkElement?: React.ReactNode | string;
   active?: string;
-  vertical?: boolean;
+  horizontal?: boolean;
   classNames?: {
     element?: string;
     active?: string;
@@ -33,7 +33,7 @@ export const Menu: React.FC<MenuProps> = ({
   expandElement = "expand",
   shrinkElement = "shrink",
   active = "",
-  vertical = false,
+  horizontal = false,
   classNames = {
     element: "",
     active: "",
@@ -69,6 +69,12 @@ export const Menu: React.FC<MenuProps> = ({
     [active, items]
   );
 
+  useEffect(() => {
+    if (horizontal) {
+      setExpanded(true);
+    }
+  }, [horizontal]);
+
   const toggleExpand = () => {
     setExpanded((prev) => !prev);
     if (subMenuExpanded) {
@@ -101,7 +107,7 @@ export const Menu: React.FC<MenuProps> = ({
           }}
           className={`${classNames.element} ${
             isActive(item.label) ? classNames.active : ""
-          }`}
+          } ${horizontal ? "flex-col" : "flex-row items-center"}`}
           aria-checked={isActive(item.label)}
           role="menuitem"
         >
@@ -109,7 +115,11 @@ export const Menu: React.FC<MenuProps> = ({
           {expanded && <span className="flex-1">{item.label}</span>}
         </button>
         {subMenuExpanded === item.label && (
-          <ul className={classNames.subMenu}>
+          <ul
+            className={`${horizontal ? "absolute top-0 left-0" : ""} ${
+              classNames.subMenu
+            }`}
+          >
             {item.subItems?.map((subItem) => (
               <li key={subItem}>
                 <button
@@ -138,11 +148,13 @@ export const Menu: React.FC<MenuProps> = ({
     <nav
       role="menu"
       className={`flex ${
-        vertical ? "flex-row items-center" : "flex-col"
+        horizontal ? "flex-row items-center" : "flex-col"
       } h-full justify-between ${classNames.menu ? classNames.menu : ""}`}
     >
       <ul
-        className={`space-y-1 flex-1 ${classNames.menu ? classNames.menu : ""}`}
+        className={`${
+          horizontal ? "flex flex-row items-center" : "flex-col"
+        } space-y-1 flex-1 ${classNames.menu ? classNames.menu : ""}`}
       >
         {items.map((group, groupIdx) => (
           <React.Fragment key={groupIdx}>
@@ -156,12 +168,14 @@ export const Menu: React.FC<MenuProps> = ({
         ))}
       </ul>
 
-      <button
-        className={classNames.expandButton}
-        onClick={() => toggleExpand()}
-      >
-        {expanded ? shrinkElement : expandElement}
-      </button>
+      {!horizontal && (
+        <button
+          className={classNames.expandButton}
+          onClick={() => toggleExpand()}
+        >
+          {expanded ? shrinkElement : expandElement}
+        </button>
+      )}
     </nav>
   );
 };

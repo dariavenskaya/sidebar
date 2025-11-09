@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 export const AppMenu: React.FC = () => {
   const [activeItem, setActiveItem] = useState("");
 
-  const isMobile = window.matchMedia("(min-width: 768px)");
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
   const navigate = useNavigate();
 
   const handleClick = (label: string) => {
@@ -50,18 +50,23 @@ export const AppMenu: React.FC = () => {
       },
     ],
   ];
+
+  const wrapperClassName = `fixed left-0 bg-gray-100 dark:bg-gray-900 ${
+    isMobile ? "w-full flex-row bottom-0 p-2" : "w-64 flex-col top-0 h-full p-5"
+  }`;
   return (
-    <div className="fixed h-full top-0 left-0 p-5 bg-gray-100 dark:bg-gray-900">
+    <div className={wrapperClassName}>
       <Menu
         items={items}
         expandElement={<Lineicons icon={ShiftRightOutlined} />}
         shrinkElement={<Lineicons icon={ShiftLeftOutlined} />}
         active={activeItem}
         onClick={handleClick}
-        vertical={isMobile.matches}
+        horizontal={isMobile}
         classNames={{
-          element:
-            "flex row items-center gap-2 w-full text-left px-2 py-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
+          element: `flex row items-center gap-2 w-full text-left px-2 py-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+            isMobile ? "flex-col text-xs" : "flex-row items-center"
+          }`,
           active: "bg-blue-50 dark:bg-blue-900/20",
           expandedMenu: "flex-1",
           shrankMenu: "flex-1",
