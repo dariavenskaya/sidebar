@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 
+/**
+ * A menu item with a label, icon, and sub items.
+ * @param label - The label of the menu item.
+ * @param icon - The icon of the menu item.
+ * @param subItems - The sub items of the menu item.
+ */
 export type MenuItem = {
   label: string;
   icon: React.ReactNode;
@@ -27,6 +33,17 @@ interface MenuProps {
   };
 }
 
+/**
+ * Customizable menu component with horizontal and vertical support. Use your own icons and styles!
+ *
+ * @param items - The menu items to display (can be nested), required, array of arrays of MenuItem.
+ * @param onClick - The function to call when a menu item is clicked, required, function that takes a string and returns void.
+ * @param expandElement - The element to display when the menu is expanded, optional, React.ReactNode or string (default: "expand").
+ * @param shrinkElement - The element to display when the menu is shrunk, optional, React.ReactNode or string (default: "shrink").
+ * @param active - The active menu item, optional, string.
+ * @param horizontal - Whether the menu is horizontal, optional, boolean.
+ * @param classNames - The class names to apply to the menu, optional, object with the following properties: element, active, menu, expandedMenu, shrankMenu, hr, expandButton, subMenu, subItem, subItemActive.
+ */
 export const Menu: React.FC<MenuProps> = ({
   items,
   onClick,
@@ -49,6 +66,7 @@ export const Menu: React.FC<MenuProps> = ({
 }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [subMenuExpanded, setSubMenuExpanded] = useState<string>();
+
   const isActive = useMemo(
     () => (label: string) => {
       if (active === label) return true;
@@ -89,13 +107,20 @@ export const Menu: React.FC<MenuProps> = ({
     setSubMenuExpanded((prev) => (prev === label ? undefined : label));
   };
 
+  const handleSubItemClick = (label: string) => {
+    onClick(label);
+    if (horizontal) {
+      setSubMenuExpanded(undefined);
+    }
+  };
   const renderMenuItem = (item: MenuItem) => {
     return (
       <li
         key={item.label}
         className={`list-none ${
           expanded ? classNames.expandedMenu : classNames.shrankMenu
-        }`}
+        }
+        ${horizontal ? "relative" : ""}`}
       >
         <button
           onClick={() => {
@@ -116,14 +141,14 @@ export const Menu: React.FC<MenuProps> = ({
         </button>
         {subMenuExpanded === item.label && (
           <ul
-            className={`${horizontal ? "absolute top-0 left-0" : ""} ${
+            className={`${horizontal ? "absolute bottom-full left-0" : ""} ${
               classNames.subMenu
             }`}
           >
             {item.subItems?.map((subItem) => (
               <li key={subItem}>
                 <button
-                  onClick={() => onClick(subItem)}
+                  onClick={() => handleSubItemClick(subItem)}
                   className={`${
                     classNames.subItem ? classNames.subItem : classNames.element
                   } ${

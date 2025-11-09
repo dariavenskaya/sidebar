@@ -52,7 +52,7 @@ export const AppMenu: React.FC = () => {
   ];
 
   const wrapperClassName = `fixed left-0 bg-gray-100 dark:bg-gray-900 ${
-    isMobile ? "w-full flex-row bottom-0 p-2" : "w-64 flex-col top-0 h-full p-5"
+    isMobile ? "w-full flex-row bottom-0 p-2" : "flex-col top-0 h-full p-5"
   }`;
   return (
     <div className={wrapperClassName}>
@@ -72,9 +72,14 @@ export const AppMenu: React.FC = () => {
           shrankMenu: "flex-1",
           hr: "border-t border-gray-200 dark:border-gray-700",
           expandButton: "mt-6 justify-end",
-          subMenu: "m-2 flex flex-col gap-2",
-          subItem:
-            "px-2 py-1.5 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors list-disc list-inside before:content-['•_'] before:text-gray-400",
+          subMenu: `flex flex-col gap-2 ${
+            isMobile ? "bg-gray-100 dark:bg-gray-900 w-full py-2" : "m-2"
+          }`,
+          subItem: `px-2 py-1.5 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors list-disc list-inside ${
+            isMobile
+              ? "text-xs"
+              : "before:content-['•_'] before:text-gray-400 text-sm"
+          }`,
           subItemActive: "bg-blue-50 dark:bg-blue-900/20",
         }}
       />
