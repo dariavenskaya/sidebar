@@ -11,7 +11,7 @@ import { Products } from "./pages/Inventory/Products";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/sidebar">
       <AppMenu />
       <Routes>
         <Route path="/" element={<Home />} />
